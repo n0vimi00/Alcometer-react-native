@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, TextInput, View, Button } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, TextInput, View } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import RadioForm from 'react-native-simple-radio-button';
-import { borderLeftColor } from 'react-native/Libraries/Components/View/ReactNativeStyleAttributes';
 
 export default function App() {
   const [weight, setWeight] = useState(50);
@@ -11,27 +10,19 @@ export default function App() {
   const [gender, setGender] = useState('male');
   const [alevel, setAlevel] = useState(0);
 
-  const bottles_array = [
-    {label: '1', value: '1'},
-    {label: '2', value: '2' },
-    {label: '3', value: '3' }
-  ]
+  const bottles_array = Array.from(Array(13).keys()).splice(1);
 
-  const time_array = [
-    {label: '1', value: '1'},
-    {label: '2', value: '2' }
-  ]
+  const time_array = Array.from(Array(11).keys()).splice(1);
 
-  const genders = [
-    {label: 'Male', value: 'male' },
-    {label: 'Female', value: 'female' }
-  ]
+  const genders = Array();
+    genders.push({label: 'Male', value: 'male' });
+    genders.push({label: 'Female', value: 'female' });
 
   function calculate() {
     let result = 0;
     let litres = bottles * 0.33;
     let grams = litres * 8 * 4.5;
-    let burning = weight / 10
+    let burning = weight / 10;
     let gramsleft = grams - (burning * time);
 
     if (gender === 'male') {
@@ -52,7 +43,7 @@ export default function App() {
         <View style={styles.field}>
         <TextInput 
           style={styles.input}
-          value={weight}
+          value={weight.toString()}
           onChangeText={text => setWeight(text)}
           placeholder='in kilograms'
           keyboardType='numeric'/>
@@ -64,7 +55,8 @@ export default function App() {
             selectedValue={bottles}
           >
             {bottles_array.map((bottles,index) => (
-              <Picker.Item key={index} label={bottles.label} value={bottles.value}/>
+              <Picker.Item style={styles.ddtext}
+                key={index} value={(index + 1).toString()} label={bottles.toString()} />
             ))
           }
         </Picker>
@@ -72,25 +64,35 @@ export default function App() {
       <Text style={styles.label}>Time</Text>
         <View style={styles.field}>
         <Picker 
+            style={styles.dropdown}
             onValueChange={(itemValue) => setTime(itemValue)}
             selectedValue={time}
           >
             {time_array.map((time,index) => (
-              <Picker.Item key={index} label={time.label} value={time.value}/>
+              <Picker.Item style={styles.ddtext}
+                key={index} value={(index + 1).toString()} label={time.toString()} />
             ))
           }
         </Picker>
         </View>
-      <Text>Gender</Text>
+      <Text style={styles.label}>Gender</Text>
         <RadioForm
           style={styles.radio}
+          // formHorizontal={true}
+          // labelHorizontal={false}
+          labelStyle={{fontSize: 17}}
           buttonSize = {30}
           radio_props={genders}
           initial={0}
           onPress={(value) => {setGender(value)}}
         />
-      <Text>{alevel.toFixed(2)}</Text>
-      <Button onPress={calculate} title='Calculate'></Button>
+      <Text style={styles.answer}>{alevel.toFixed(2)}</Text>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={calculate}
+      >
+        <Text style={styles.btext}>CALCULATE</Text>
+      </TouchableOpacity>
   </View>
   );
 }
@@ -102,7 +104,7 @@ export default function App() {
     },
     header: {
       fontWeight: 'bold',
-      fontSize: 40,
+      fontSize: 50,
       textAlign: 'center',
       color: 'dodgerblue',
       padding: 20,
@@ -110,20 +112,40 @@ export default function App() {
     label: {
       fontWeight: 'bold',
       fontSize: 20,
-      textAlign: 'center',
+      paddingLeft: 15,
     },
     field: {
       margin: 10,
       borderWidth: 1,
-      textAlign: 'center',
-
     },
     input: {
       marginLeft: 10,
+      fontSize: 20,
+      paddingTop: 10,
+      paddingBottom: 10,
     },
     radio: {
-      marginTop: 10,
-      marginBottom: 10,
+      paddingLeft: 10,
+      paddingTop: 20,
+    },
+    ddtext: {
+      fontSize: 20,
+    },
+    answer: {
+      textAlign: 'center',
+      fontWeight: 'bold',
+      fontSize: 50,
+      color: 'gold',
+      paddingBottom: 20,
+    }, 
+    btext: {
+      fontSize: 30,
+      color: 'white'
+    },
+    button: {
+      alignItems: "center",
+      backgroundColor: 'dodgerblue',
+      padding: 15,
     },
   });
 
